@@ -10,22 +10,26 @@ import { ILoginPayload, loginZodSchema } from "@/zod/auth.validation"
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Eye, EyeOff } from "lucide-react"
+import { SearchParams } from "next/dist/server/request/search-params"
 import Link from "next/link"
 import { useState } from "react"
 
+interface LoginFormParams {
+    redirectPath?: string;
+}
 
 
-const LoginForm = () => {
+const LoginForm = ({ redirectPath }: LoginFormParams) => {
     // const queryClient = useQueryClient()
 
     const [serverError, setServerError] = useState<string | null>(null)
     const [showPassword, setShowPassword] = useState(false)
 
     const { mutateAsync, isPending } = useMutation({
-        mutationFn: (payload: ILoginPayload) => loginAction(payload),
+        mutationFn: (payload: ILoginPayload) => loginAction(payload, redirectPath),
     })
 
-    
+
     const form = useForm({
         defaultValues: {
             email: "",
