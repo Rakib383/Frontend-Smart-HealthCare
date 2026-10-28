@@ -2,21 +2,36 @@ import DoctorsTable from "@/components/modules/Admin/DoctorManagement/DoctorsTab
 import { getDoctors } from "@/services/doctor.services"
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query"
 
-const DoctorsManagementPage = async () => {
+const DoctorsManagementPage = async ({searchParams}:{
+  searchParams:Promise<{[key:string]:string | string[] | undefined}>
+}) => {
 
+  const queryParamsObjects = { ...(await searchParams) };
+  if (queryParamsObjects.gender !== "MALE" && queryParamsObjects.gender !== "FEMALE") {
+    delete queryParamsObjects.gender;
+  }
 
+  const serializedSearchParams = new URLSearchParams();
+  Object.entries(queryParamsObjects).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      value.forEach((item) => serializedSearchParams.append(key, item));
+    } else if (value !== undefined) {
+      serializedSearchParams.set(key, value);
+    }
+  });
+  const queryString = serializedSearchParams.toString();
 
   const queryClient = new QueryClient()
 
   await queryClient.prefetchQuery({
-    queryKey: ['doctors'],
-    queryFn: getDoctors,
+    queryKey: ['doctors',queryParamsObjects],
+    queryFn: () => getDoctors(queryString),
     staleTime: 1000*60*60
   }) 
 
   return (
     <HydrationBoundary state = {dehydrate(queryClient)}>
-      <DoctorsTable/>
+      <DoctorsTable queryString={queryString} queryParamsObject={queryParamsObjects}/>
 
     </HydrationBoundary>
   )

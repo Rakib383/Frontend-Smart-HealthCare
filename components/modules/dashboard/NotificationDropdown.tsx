@@ -6,6 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
 import { Bell, Calendar, CheckCircle, Clock, UserPlus } from "lucide-react";
+import { useState } from "react";
 
 interface Notification {
     id: string;
@@ -72,19 +73,33 @@ const getNotificationIcon = (type: Notification["type"]) => {
 
 
 const NotificationDropdown = () => {
+    const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
+    const unreadCount = notifications.filter(notification => !notification.read).length;
 
-    const unreadCount = MOCK_NOTIFICATIONS.filter(notification => !notification.read).length;
+    const markAsRead = (notificationId: string) => {
+        setNotifications(currentNotifications => currentNotifications.map(notification =>
+            notification.id === notificationId ? { ...notification, read: true } : notification
+        ));
+    };
+
+    const markAllAsRead = () => {
+        setNotifications(currentNotifications => currentNotifications.map(notification => ({
+            ...notification,
+            read: true,
+        })));
+    };
+
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger >
-                <Button variant={"outline"} size={"icon"} className="relative">
+            <DropdownMenuTrigger
+                render={<Button variant="outline" size="icon" className="relative" aria-label="Notifications" />}
+            >
                     <Bell className="h-5 w-5" />
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded full p-0 flex items-center justify-center" variant={"destructive"}>
-                        <span className="text-[10px">
+                    {unreadCount > 0 && <Badge className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full p-0" variant={"destructive"}>
+                        <span className="text-[10px]">
                             {unreadCount > 9 ? "9+" : unreadCount}
                         </span>
-                    </Badge>
-                </Button>
+                    </Badge>}
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align={"end"} className="w-80">
@@ -106,8 +121,12 @@ const NotificationDropdown = () => {
                 <ScrollArea className="h-75">
                     {
                         MOCK_NOTIFICATIONS.length > 0 ? (
-                            MOCK_NOTIFICATIONS.map(notification => (
-                                <DropdownMenuItem key={notification.id} className="flex flex-col items-start gap-2 p-3 cursor-pointer">
+                            notifications.map(notification => (
+                                <DropdownMenuItem
+                                    key={notification.id}
+                                    className="flex cursor-pointer flex-col items-start gap-2 p-3"
+                                    onClick={() => markAsRead(notification.id)}
+                                >
                                     <div className="mt-0.5">
                                         {getNotificationIcon(notification.type)}
                                     </div>
@@ -146,8 +165,12 @@ const NotificationDropdown = () => {
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem className="text-center justify-center cursor-pointer">
-                    View All Notifications
+                <DropdownMenuItem
+                    className="cursor-pointer justify-center text-center"
+                    disabled={unreadCount === 0}
+                    onClick={markAllAsRead}
+                >
+                    Mark all as read
                 </DropdownMenuItem>
             </DropdownMenuContent>
 

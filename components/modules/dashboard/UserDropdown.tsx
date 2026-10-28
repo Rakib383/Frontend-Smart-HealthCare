@@ -9,14 +9,16 @@ interface UserDropdownProps {
 }
 
 const UserDropdown = ({ userInfo }: UserDropdownProps) => {
+    const userInitial = userInfo.name.trim().charAt(0).toUpperCase() || "?";
+
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger >
-                <Button variant={"outline"} size={"icon"} className="rounded-full">
+            <DropdownMenuTrigger
+                render={<Button variant="outline" size="icon" className="rounded-full" aria-label="User menu" />}
+            >
                     <span className="text-sm font-semibold">
-                        {userInfo.name.charAt(0).toUpperCase()}
+                        {userInitial}
                     </span>
-                </Button>
             </DropdownMenuTrigger>
 
 
@@ -39,18 +41,14 @@ const UserDropdown = ({ userInfo }: UserDropdownProps) => {
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem>
-                    <Link href={"/my-profile"}>
-                        <User className="mr-2 h-4 w-4" />
-                        My Profile
-                    </Link>
+                <DropdownMenuItem render={<Link href="/my-profile" />}>
+                    <User className="mr-2 h-4 w-4" />
+                    My Profile
                 </DropdownMenuItem>
 
-                <DropdownMenuItem>
-                    <Link href={"/change-password"}>
-                        <Key className="mr-2 h-4 w-4" />
-                        Change Password
-                    </Link>
+                <DropdownMenuItem render={<Link href="/change-password" />}>
+                    <Key className="mr-2 h-4 w-4" />
+                    Change Password
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />

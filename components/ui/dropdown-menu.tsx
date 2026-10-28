@@ -60,15 +60,17 @@ function DropdownMenuLabel({
   inset?: boolean
 }) {
   return (
-    <MenuPrimitive.GroupLabel
-      data-slot="dropdown-menu-label"
-      data-inset={inset}
-      className={cn(
-        "px-1.5 py-1 text-xs font-medium text-muted-foreground data-inset:pl-7",
-        className
-      )}
-      {...props}
-    />
+    <MenuPrimitive.Group>
+      <MenuPrimitive.GroupLabel
+        data-slot="dropdown-menu-label"
+        data-inset={inset}
+        className={cn(
+          "px-1.5 py-1 text-xs font-medium text-muted-foreground data-inset:pl-7",
+          className
+        )}
+        {...props}
+      />
+    </MenuPrimitive.Group>
   )
 }
 
@@ -165,13 +167,13 @@ function DropdownMenuCheckboxItem({
       {...props}
     >
       <span
-        className="pointer-events-none absolute right-2 flex items-center justify-center"
+        className={cn(
+          "pointer-events-none absolute right-2 flex size-4 items-center justify-center rounded-[3px] border border-input bg-background",
+          checked && "border-primary bg-primary text-primary-foreground"
+        )}
         data-slot="dropdown-menu-checkbox-item-indicator"
       >
-        <MenuPrimitive.CheckboxItemIndicator>
-          <CheckIcon
-          />
-        </MenuPrimitive.CheckboxItemIndicator>
+        {checked && <CheckIcon className="size-3" />}
       </span>
       {children}
     </MenuPrimitive.CheckboxItem>

@@ -132,12 +132,12 @@ const httpPut = async <TData>(endPoint: string, data: unknown, options?: ApiRequ
 }
 
 
-const httpPatch = async <TData>(endPoint: string, options?: ApiRequestOptions): Promise<ApiResponse<TData>> => {
+const httpPatch = async <TData>(endPoint: string, data: unknown, options?: ApiRequestOptions): Promise<ApiResponse<TData>> => {
     try {
 
         const instance = await axiosInstance();
 
-        const response = await instance.patch<ApiResponse<TData>>(endPoint, {
+        const response = await instance.patch<ApiResponse<TData>>(endPoint, data, {
             params: options?.params,
             headers: options?.headers
         })
