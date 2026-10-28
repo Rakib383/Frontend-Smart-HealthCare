@@ -1,4 +1,5 @@
 import DoctorsTable from "@/components/modules/Admin/DoctorManagement/DoctorsTable"
+import { serializeManagementSearchParams } from "@/lib/management/serializeManagementSearchParams"
 import { getDoctors } from "@/services/doctor.services"
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query"
 
@@ -11,15 +12,7 @@ const DoctorsManagementPage = async ({searchParams}:{
     delete queryParamsObjects.gender;
   }
 
-  const serializedSearchParams = new URLSearchParams();
-  Object.entries(queryParamsObjects).forEach(([key, value]) => {
-    if (Array.isArray(value)) {
-      value.forEach((item) => serializedSearchParams.append(key, item));
-    } else if (value !== undefined) {
-      serializedSearchParams.set(key, value);
-    }
-  });
-  const queryString = serializedSearchParams.toString();
+  const queryString = serializeManagementSearchParams(queryParamsObjects)
 
   const queryClient = new QueryClient()
 

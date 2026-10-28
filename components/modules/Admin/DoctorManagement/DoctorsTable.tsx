@@ -2,6 +2,7 @@
 
 
 import DataTable from "@/components/shared/table/DataTable"
+import useManagementTable from "@/components/shared/table/useManagementTable"
 import CreateDoctorSheet from "@/components/modules/Admin/DoctorManagement/CreateDoctorSheet"
 import DeleteDoctorDialog from "@/components/modules/Admin/DoctorManagement/DeleteDoctorDialog"
 import EditDoctorDialog from "@/components/modules/Admin/DoctorManagement/EditDoctorDialog"
@@ -235,40 +236,20 @@ const DoctorsTable = ({queryString,queryParamsObject}:{queryString:string;queryP
 
   const doctors = doctorDataResponse?.data ?? [];
   const paginationMeta = doctorDataResponse?.meta;
-  const requestedPage = Number(Array.isArray(queryParamsObject.page) ? queryParamsObject.page[0] : queryParamsObject.page);
-  const page = paginationMeta?.page ?? (Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1);
-  const requestedPageSize = Number(Array.isArray(queryParamsObject.limit) ? queryParamsObject.limit[0] : queryParamsObject.limit);
-  const pageSize = paginationMeta?.limit ?? (Number.isInteger(requestedPageSize) && requestedPageSize > 0 ? requestedPageSize : 10);
-
-  const handlePageChange = (nextPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", String(nextPage));
-    params.set("limit", String(pageSize));
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  };
-
-  const handlePageSizeChange = (nextPageSize: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", "1");
-    params.set("limit", String(nextPageSize));
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  };
-
-  const searchTerm = searchParams.get("searchTerm") ?? "";
-  const handleSearch = (nextSearchTerm: string) => {
-    if (nextSearchTerm === searchTerm) {
-      return;
-    }
-
-    const params = new URLSearchParams(searchParams.toString());
-    if (nextSearchTerm) {
-      params.set("searchTerm", nextSearchTerm);
-    } else {
-      params.delete("searchTerm");
-    }
-    params.set("page", "1");
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  };
+  const {
+    page,
+    pageSize,
+    searchTerm,
+    handlePageChange,
+    handlePageSizeChange,
+    handleSearch,
+  } = useManagementTable({
+    queryParams: queryParamsObject,
+    pageInfo: {
+      page: paginationMeta?.page,
+      pageSize: paginationMeta?.limit,
+    },
+  });
 
   const handleApplyFilters = ({ gender, experience, specialtyTitles, minimumFee, maximumFee }: DoctorFilterValues) => {
     const params = new URLSearchParams(searchParams.toString());
