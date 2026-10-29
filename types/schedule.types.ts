@@ -14,3 +14,22 @@ export interface ICreateSchedulePayload {
 }
 
 export type IUpdateSchedulePayload = ICreateSchedulePayload
+
+export interface IDoctorSchedule {
+  doctorId: string
+  scheduleId: string
+  isBooked: boolean
+  createdAt: string | Date
+  schedule: ISchedule
+}
+
+export interface ICreateDoctorSchedulePayload {
+  scheduleIds: string[]
+}
+
+export interface IUpdateDoctorSchedulePayload {
+  scheduleIds: Array<{
+    id: string
+    shouldDelete: boolean
+  }>
+}

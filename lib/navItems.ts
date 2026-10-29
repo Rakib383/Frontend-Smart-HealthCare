@@ -46,7 +46,7 @@ export const getCommonNavItems = (role: UserRole): NavSection[] => {
 
 export const doctorNavItems: NavSection[] = [
     {
-        title: "Patient Management",
+        title: "Practice Management",
         items: [
             {
                 title: "Appointments",

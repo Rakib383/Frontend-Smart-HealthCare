@@ -11,6 +11,7 @@ interface DataTableActions<TData> {
     onView?: (data: TData) => void;
     onEdit?: (data: TData) => void;
     onDelete?: (data: TData) => void;
+    canDelete?: (data: TData) => boolean;
 }
 
 const features = tableFeatures({
@@ -143,7 +144,7 @@ const DataTable = <TData extends RowData,>({ data, columns, actions, emptyMessag
                             )
                         }
                         {
-                            actions.onDelete && (
+                            actions.onDelete && actions.canDelete?.(rowData) !== false && (
                                 <DropdownMenuItem onClick={() => actions.onDelete?.(rowData)}>Delete</DropdownMenuItem>
                             )
                         }

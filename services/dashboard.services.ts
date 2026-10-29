@@ -1,25 +1,28 @@
 "use server"
 
 import { httpClient } from "@/lib/axios/httpClient";
-import { IAdminDashboardData } from "@/types/dashboard.types";
+import type { IAdminDashboardData, IDoctorDashboardData } from "@/types/dashboard.types";
 
-export async function getDashboardData () {
+export async function getDashboardData() {
     try {
-
         const response = await httpClient.get<IAdminDashboardData>("/stats")
-
         return response
-        
-    } catch (error:any) {
-
-        console.log(error, "from dashboard server action");
-
+    } catch (error) {
+        console.error("Error fetching dashboard data:", error)
         return {
-            success:false,
-            message:error.message || "an error occurred while fetching dashboard data.",
-            data:null,
-            meta:null
+            success: false,
+            message: error instanceof Error ? error.message : "An error occurred while fetching dashboard data.",
+            data: null,
+            meta: null,
         }
-        
+    }
+}
+
+export async function getDoctorDashboardData() {
+    try {
+        return await httpClient.get<IDoctorDashboardData>("/stats")
+    } catch (error) {
+        console.error("Error fetching doctor dashboard data:", error)
+        throw error
     }
 }
