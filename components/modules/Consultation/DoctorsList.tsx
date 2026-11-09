@@ -1,32 +1,24 @@
 "use client"
-import { getDoctors } from "@/app/(commonLayout)/consultation/_actions"
-import { useQuery } from "@tanstack/react-query";
+import { getDoctors } from "@/services/doctor.services"
+import { useQuery } from "@tanstack/react-query"
+
+const doctorsQueryString = "page=1&limit=10"
 
 const DoctorsList = () => {
-
-    const { data, isPending } = useQuery({
-        queryKey: ["doctors"],
-        queryFn: () => getDoctors(),
+    const { isPending, isError } = useQuery({
+        queryKey: ["doctors", doctorsQueryString],
+        queryFn: () => getDoctors(doctorsQueryString),
     })
 
     if (isPending) {
         return <div>Loading doctors...</div>
-      }
+    }
 
-    // console.log(data);
+    if (isError) {
+        return <div role="alert">Unable to load doctors.</div>
+    }
 
-
-    return (
-        <div>
-           {/* {
-            data.data.map((doctor:any) => (
-                <div key={doctor.id}>{
-                    doctor.name
-                }</div>
-            ))
-           } */}
-        </div>
-    )
+    return <div />
 }
 
 export default DoctorsList
