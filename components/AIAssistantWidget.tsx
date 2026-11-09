@@ -51,6 +51,14 @@ const AIAssistantWidget = () => {
     }
   }, [isOpen, messages, isSending])
 
+  useEffect(() => {
+    const openAssistant = () => setIsOpen(true)
+    window.addEventListener("healora:open-assistant", openAssistant)
+
+    return () =>
+      window.removeEventListener("healora:open-assistant", openAssistant)
+  }, [])
+
   const appendMessage = (
     message: Omit<ChatMessage, "id">,
   ) => {
