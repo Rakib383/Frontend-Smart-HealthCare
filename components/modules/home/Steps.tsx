@@ -64,16 +64,6 @@ const Steps = () => (
           )
         })}
       </div>
-
-      <div className="mt-9 text-center">
-        <Link
-          href="/consultation"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-teal-700 transition-colors hover:text-teal-900"
-        >
-          Start exploring doctors
-          <ArrowRight className="size-4" aria-hidden="true" />
-        </Link>
-      </div>
     </div>
   </section>
 )

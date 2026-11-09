@@ -37,7 +37,7 @@ const AIAssistantWidget = () => {
       id: 0,
       role: "assistant",
       content:
-        "Hi! I’m your Smart HealthCare assistant. Ask me about doctors, specialties, or using the platform.",
+        "Hi! I’m your Healora assistant. Ask me about doctors, specialties, or using the platform.",
     },
   ])
   const nextMessageId = useRef(1)

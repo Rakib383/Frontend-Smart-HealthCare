@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { ArrowRight, HeartPulse, Menu } from "lucide-react"
+import Image from "next/image"
+import { ArrowRight, Menu } from "lucide-react"
 
 const navigationLinks = [
   { label: "Home", href: "/" },
@@ -10,14 +11,16 @@ const navigationLinks = [
 
 const PublicNavbar = () => (
   <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur">
-    <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-      <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Smart HealthCare home">
-        <span className="flex size-10 items-center justify-center rounded-xl bg-teal-700 text-white">
-          <HeartPulse className="size-5" aria-hidden="true" />
-        </span>
-        <span className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
-          Smart<span className="text-teal-700">HealthCare</span>
-        </span>
+    <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+      <Link href="/" className="flex shrink-0 items-center" aria-label="Healora home">
+        <Image
+          src="/images/healora-logo.png"
+          alt=""
+          width={200}
+          height={53}
+          priority
+          className="h-auto w-40 sm:w-48"
+        />
       </Link>
 
       <nav aria-label="Main navigation" className="hidden items-center gap-7 md:flex">

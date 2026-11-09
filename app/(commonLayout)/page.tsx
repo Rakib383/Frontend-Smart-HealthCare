@@ -6,9 +6,9 @@ import TopDoctors from "@/components/modules/home/TopDoctors"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Smart HealthCare | Care that fits your life",
+  title: "Where Healthcare Meets Intelligence",
   description:
-    "Find trusted doctors, book appointments, and manage your care with Smart HealthCare.",
+    "Where Healthcare Meets Intelligence",
 }
 
 export default function HomePage() {

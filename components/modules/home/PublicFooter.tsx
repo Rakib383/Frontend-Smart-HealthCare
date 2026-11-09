@@ -1,18 +1,19 @@
 import Link from "next/link"
-import { HeartPulse } from "lucide-react"
+import Image from "next/image"
 
 const PublicFooter = () => (
   <footer id="footer" className="bg-slate-950 text-slate-300">
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
         <div className="max-w-sm">
-          <Link href="/" className="inline-flex items-center gap-2.5 text-white">
-            <span className="flex size-10 items-center justify-center rounded-xl bg-teal-600">
-              <HeartPulse className="size-5" aria-hidden="true" />
-            </span>
-            <span className="text-lg font-bold tracking-tight">
-              Smart<span className="text-teal-400">HealthCare</span>
-            </span>
+          <Link href="/" className="inline-flex items-center rounded-xl bg-white px-2 py-1">
+            <Image
+              src="/images/healora-logo.png"
+              alt="Healora"
+              width={200}
+              height={53}
+              className="h-auto w-40 sm:w-48"
+            />
           </Link>
           <p className="mt-4 text-sm leading-6 text-slate-400">
             Making it easier to find care, connect with doctors, and take the
@@ -40,7 +41,7 @@ const PublicFooter = () => (
       </div>
 
       <div className="mt-10 border-t border-slate-800 pt-6 text-xs text-slate-500">
-        © {new Date().getFullYear()} Smart HealthCare. All rights reserved.
+        © {new Date().getFullYear()} Healora. All rights reserved.
       </div>
     </div>
   </footer>
