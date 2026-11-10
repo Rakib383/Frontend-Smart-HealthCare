@@ -71,7 +71,7 @@ const AICareNavigation = () => {
           </p>
           <h2
             id="ai-care-navigation-title"
-            className="mt-2 max-w-xl font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-950 sm:text-4xl lg:text-[2.75rem]"
+            className="mt-2 max-w-xl font-heading text-[28px] font-extrabold leading-tight tracking-tight text-slate-950 sm:text-4xl lg:text-[2.75rem]"
           >
             Preparedness Before Every Consultation.
           </h2>

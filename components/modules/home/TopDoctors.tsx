@@ -303,7 +303,7 @@ const TopDoctors = () => {
           setIsAutoPaused(false)
         }
       }}
-      className="scroll-mt-24 bg-emerald-50/80 py-14 sm:py-18 lg:py-20"
+      className="scroll-mt-24 bg-white py-8 sm:py-10 lg:py-12"
     >
       <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -311,7 +311,7 @@ const TopDoctors = () => {
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-800">
               Vetted Network
             </p>
-            <h2 className="mt-2 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-950 sm:text-4xl">
+            <h2 className="mt-2 font-heading text-[28px] font-extrabold leading-tight tracking-tight text-slate-950 sm:text-4xl">
               Featured Clinical Specialists
             </h2>
             <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-base">

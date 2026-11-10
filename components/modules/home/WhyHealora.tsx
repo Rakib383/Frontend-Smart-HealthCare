@@ -59,20 +59,20 @@ const WhyHealora = () => {
     <section
       id="why-healora"
       aria-labelledby="why-healora-title"
-      className="scroll-mt-24 bg-white px-3 py-10 sm:px-5 sm:py-14 lg:py-20"
+      className="scroll-mt-24 bg-white px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5"
     >
-      <div className="mx-auto grid max-w-[1600px] gap-8 rounded-2xl bg-[#eff8f1] p-5 sm:gap-10 sm:p-8 lg:grid-cols-[minmax(0,0.94fr)_minmax(0,1fr)] lg:items-center lg:gap-10 lg:p-10 xl:gap-14 xl:p-12">
+      <div className="mx-auto grid max-w-[1600px] gap-8 rounded-2xl bg-[#e8f7f1] p-5 sm:gap-10 sm:p-8 lg:grid-cols-[minmax(0,0.94fr)_minmax(0,1fr)] lg:items-center lg:gap-10 lg:p-10 xl:gap-14 xl:p-12">
         <div className="min-w-0">
           <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-800">
             Why Healora
           </p>
           <h2
             id="why-healora-title"
-            className="mt-2 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-950 sm:text-4xl"
+            className="mt-2 font-heading text-[28px] font-extrabold leading-tight tracking-tight text-slate-950 sm:text-4xl"
           >
             Building a Healthier Future, Together.
           </h2>
-          <p className="mt-3 text-base leading-7 text-slate-700">
+          <p className="mt-3 text-[15px] leading-7 text-slate-700 sm:text-base">
             At Healora, we believe healthcare should be accessible, connected,
             and centered around people. We&apos;re bringing patients, doctors,
             and intelligent technology together to create a simpler and more
