@@ -3,7 +3,7 @@ import LoginForm from '@/components/modules/Auth/LoginForm'
 
 
 interface LoginParams {
-  searchParams:Promise<{redirect?:string}>;
+  searchParams: Promise<{ redirect?: string }>;
 }
 
 const loginPage = async ({searchParams}:LoginParams) => {
@@ -14,7 +14,7 @@ const loginPage = async ({searchParams}:LoginParams) => {
 
   return (
     
-      <LoginForm redirectPath={redirectPath}/>
+      <LoginForm redirectPath={redirectPath} />
     
   )
 }

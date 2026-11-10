@@ -1,7 +1,10 @@
+"use client"
+
+import { useLogout } from "@/components/modules/Auth/useLogout"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { UserInfo } from "@/types/user.types"
-import { Key, LogOut, User } from "lucide-react"
+import { Key, LoaderCircle, LogOut, User } from "lucide-react"
 import Link from "next/link"
 
 interface UserDropdownProps {
@@ -10,6 +13,7 @@ interface UserDropdownProps {
 
 const UserDropdown = ({ userInfo }: UserDropdownProps) => {
     const userInitial = userInfo.name.trim().charAt(0).toUpperCase() || "?";
+    const { logout, isPending: isLoggingOut } = useLogout()
 
     return (
         <DropdownMenu>
@@ -54,9 +58,17 @@ const UserDropdown = ({ userInfo }: UserDropdownProps) => {
                 <DropdownMenuSeparator />
 
 
-                <DropdownMenuItem onClick={() => { }} className="cursor-pointer text-red-600">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Logout
+                <DropdownMenuItem
+                    onClick={() => {
+                        void logout()
+                    }}
+                    disabled={isLoggingOut}
+                    className="cursor-pointer text-red-600"
+                >
+                    {isLoggingOut
+                        ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                        : <LogOut className="mr-2 h-4 w-4" />}
+                    Log out
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

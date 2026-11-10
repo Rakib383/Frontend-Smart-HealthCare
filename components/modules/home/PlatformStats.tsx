@@ -121,18 +121,16 @@ const PlatformStats = () => {
                     setSelectedStat(index)
                   }
                 }}
-                className={`group relative isolate flex min-h-36 cursor-pointer flex-col items-start justify-between overflow-hidden rounded-2xl border p-4 shadow-sm transition-colors duration-300 before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.3),transparent_58%)] before:opacity-0 before:transition-opacity before:duration-300 hover:border-emerald-800 hover:bg-emerald-800 hover:text-white hover:before:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800 sm:min-h-40 sm:p-4 lg:min-h-44 lg:p-6 ${
-                  selectedStat === index
+                className={`group relative isolate flex min-h-36 cursor-pointer flex-col items-start justify-between overflow-hidden rounded-2xl border p-4 shadow-sm transition-colors duration-300 before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.3),transparent_58%)] before:opacity-0 before:transition-opacity before:duration-300 hover:border-emerald-800 hover:bg-emerald-800 hover:text-white hover:before:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800 sm:min-h-40 sm:p-4 lg:min-h-44 lg:p-6 ${selectedStat === index
                     ? "border-emerald-800 bg-emerald-800 text-white before:opacity-100"
                     : "border-emerald-900/10 bg-white text-slate-950"
-                }`}
+                  }`}
               >
                 <span
-                  className={`relative z-10 flex size-9 items-center justify-center rounded-lg transition-colors duration-300 group-hover:bg-white/15 group-hover:text-white sm:size-10 ${
-                    selectedStat === index
+                  className={`relative z-10 flex size-9 items-center justify-center rounded-lg transition-colors duration-300 group-hover:bg-white/15 group-hover:text-white sm:size-10 ${selectedStat === index
                       ? "bg-white/15 text-white"
                       : "bg-emerald-100 text-emerald-800"
-                  }`}
+                    }`}
                 >
                   <Icon className="size-4 sm:size-[1.125rem]" aria-hidden="true" />
                 </span>
@@ -148,11 +146,10 @@ const PlatformStats = () => {
                     </span>
                   </dd>
                   <dt
-                    className={`mt-2 text-xs font-medium transition-colors duration-300 group-hover:text-emerald-50 sm:text-sm ${
-                      selectedStat === index
+                    className={`mt-2 text-xs font-medium transition-colors duration-300 group-hover:text-emerald-50 sm:text-sm ${selectedStat === index
                         ? "text-emerald-50"
                         : "text-slate-700"
-                    }`}
+                      }`}
                   >
                     {stat.label}
                   </dt>

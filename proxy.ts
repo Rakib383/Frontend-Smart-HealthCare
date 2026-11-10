@@ -42,6 +42,10 @@ export async function proxy(request: NextRequest) {
 
         const isAuth = isAuthRoute(pathname);
 
+        // Keep authenticated users out of guest-only authentication pages.
+        if (isAuth && isValidAccessToken) {
+            return NextResponse.redirect(new URL(getDefaultDashboardRoute(userRole as UserRole), request.url));
+        }
 
         //proactively refresh token if refresh token exists and access token is expired or about to expire
         if (isValidAccessToken && refreshToken && (await isTokenExpiringSoon(accessToken))) {
@@ -78,11 +82,6 @@ export async function proxy(request: NextRequest) {
             return response;
         }
 
-
-        // Rule - 1 : User is logged in (has access token) and trying to access auth route -> allow
-        if (isAuth && isValidAccessToken) {
-            return NextResponse.redirect(new URL(getDefaultDashboardRoute(userRole as UserRole), request.url));
-        }
 
         // Rule - 2 : User is trying to access reset password page
         if (pathname === "/reset-password") {

@@ -2,11 +2,11 @@
 export type UserRole = "SUPER_ADMIN" | "ADMIN" | "DOCTOR" | "PATIENT";
 
 
-export const authRoutes = ["login","register","forget-password","reset-password","verify-email"]
+export const authRoutes = ["/login", "/register", "/forgot-password"]
 
 export const isAuthRoute = (pathname:string) => {
-
-    return authRoutes.some((route:string) => route === pathname)
+    const normalizedPath = pathname.replace(/\/+$/, "") || "/"
+    return authRoutes.includes(normalizedPath)
 }
 
 export type RouteConfig = {

@@ -26,6 +26,7 @@ type AppFieldProps = {
     prepend?: React.ReactNode;
     className ?: string;
     disabled ?: boolean
+    readOnly ?: boolean
 
 }
 
@@ -38,6 +39,7 @@ export const AppField = ({
     prepend,
     className,
     disabled=false,
+    readOnly=false,
 }:AppFieldProps) => {
 
         const firstError = field.state.meta.isTouched && field.state.meta.errors.length > 0 ? getErrorMessage(field.state.meta.errors[0]) : null
@@ -46,7 +48,7 @@ export const AppField = ({
 
     return (
         <div>
-            <Label htmlFor={field.name} className={cn( hasError && "text-destructive")}>
+            <Label htmlFor={field.name} className={cn("mb-1.5", hasError && "text-destructive")}>
 
                 {label} 
 
@@ -72,6 +74,7 @@ export const AppField = ({
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
                 disabled={disabled}
+                readOnly={readOnly}
                 aria-invalid={hasError}
                 aria-describedby={hasError ? `${field.name}-error`:undefined}
                 className={cn(prepend && "pl-10",

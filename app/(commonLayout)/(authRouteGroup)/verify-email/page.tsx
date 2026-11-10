@@ -1,12 +1,13 @@
 
-import React from 'react'
+import VerifyEmailForm from "@/components/modules/Auth/VerifyEmailForm"
 
-const verifyEmailPage = () => {
-  return (
-    <div>
-      verifyEmailPage
-    </div>
-  )
+interface VerifyEmailPageProps {
+  searchParams: Promise<{ email?: string }>
 }
 
-export default verifyEmailPage
+const VerifyEmailPage = async ({ searchParams }: VerifyEmailPageProps) => {
+  const { email = "" } = await searchParams
+  return <VerifyEmailForm email={email} />
+}
+
+export default VerifyEmailPage
