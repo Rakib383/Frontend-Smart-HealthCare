@@ -13,7 +13,7 @@ const AppointmentBarChart = ({ data }: AppointmentBarChartProps) => {
 
     if (!data || !Array.isArray(data)) {
         return (
-            <Card className="col-span-4">
+            <Card>
                 <CardHeader>
                     <CardTitle>Appointment Trends</CardTitle>
                     <CardDescription>Monthly Appointment Statistics</CardDescription>
@@ -37,7 +37,7 @@ const AppointmentBarChart = ({ data }: AppointmentBarChartProps) => {
 
     if (!formattedData.length || formattedData.every(item => item.appointments === 0)) {
         return (
-            <Card className="col-span-4">
+            <Card>
                 <CardHeader>
                     <CardTitle>Appointment Trends</CardTitle>
                     <CardDescription>Monthly Appointment Statistics</CardDescription>
@@ -51,7 +51,7 @@ const AppointmentBarChart = ({ data }: AppointmentBarChartProps) => {
         );
     }
     return (
-        <Card className="col-span-4">
+        <Card>
             <CardHeader>
                 <CardTitle>Appointment Trends</CardTitle>
                 <CardDescription>Monthly Appointment Statistics</CardDescription>

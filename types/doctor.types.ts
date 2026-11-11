@@ -12,6 +12,7 @@ export enum UserStatus {
 
 export interface IDoctor {
     id:string;
+    userId:string;
     name: string;
     email: string;
     profilePhoto?: string;

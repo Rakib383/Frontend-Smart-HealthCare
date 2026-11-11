@@ -40,7 +40,7 @@ const AdminDashboardContent = () => {
             if (result.success) {
                 setIngestionResult({
                     type: "success",
-                    message: `${result.message} ${result.indexedCount} doctors indexed.`,
+                    message: `AI doctor directory updated: ${result.indexedCount} profile${result.indexedCount === 1 ? "" : "s"} indexed.`,
                 })
             } else {
                 setIngestionResult({ type: "error", message: result.error })
@@ -57,7 +57,7 @@ const AdminDashboardContent = () => {
     }
 
   return (
-    <div>
+    <div className="space-y-4">
         <section className="mb-6 flex flex-col gap-4 rounded-xl border bg-card p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <h2 className="text-lg font-semibold">Doctor data ingestion</h2>
@@ -88,12 +88,25 @@ const AdminDashboardContent = () => {
             </Button>
         </section>
 
-        <StatsCard title="Total Appointments" value={data?.appointmentCount || 0} iconName="CalendarDays" description="Number of appointments scheduled"/>
+        <section className="grid gap-4 sm:grid-cols-2" aria-label="Platform statistics">
+            <StatsCard
+                title="Total Appointments"
+                value={data?.appointmentCount ?? 0}
+                iconName="CalendarDays"
+                description="Number of appointments scheduled"
+            />
+            <StatsCard
+                title="Total Patients"
+                value={data?.patientCount ?? 0}
+                iconName="Users"
+                description="Number of patients registered"
+            />
+        </section>
 
-        <StatsCard title="Total Patients" value={data?.patientCount || 0} iconName="Users" description="Number of patients registered"/>
-
-        <AppointmentBarChart data={data?.barChartData || []}/>
-        <AppointmentPieChart data={data?.pieChartData || []}/>
+        <section className="grid gap-4 lg:grid-cols-2" aria-label="Appointment analytics">
+            <AppointmentBarChart data={data?.barChartData || []}/>
+            <AppointmentPieChart data={data?.pieChartData || []}/>
+        </section>
       
     </div>
   )

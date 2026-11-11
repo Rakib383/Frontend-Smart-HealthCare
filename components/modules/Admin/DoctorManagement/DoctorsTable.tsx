@@ -16,15 +16,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
+import { toast } from "@/components/ui/toast"
 import { getDoctors } from "@/services/doctor.services"
+import { changeUserStatus } from "@/services/admin.services"
 import { getSpecialties } from "@/services/specialty.services"
 import { IDoctor } from "@/types/doctor.types"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { FormEvent } from "react"
 import { useState } from "react"
 import { ChevronDown } from "lucide-react"
-import { doctorColumns } from "./doctorsColumns"
+import { getDoctorColumns } from "./doctorsColumns"
 
 interface DoctorFilterValues {
   gender: string;
@@ -218,6 +220,7 @@ const DoctorFilters = ({ gender, experience, specialtyTitles, minimumFee, maximu
 
 const DoctorsTable = ({queryString,queryParamsObject}:{queryString:string;queryParamsObject:{[key:string]:string|string[]|undefined}}) => {
 
+    const queryClient = useQueryClient()
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -227,6 +230,18 @@ const DoctorsTable = ({queryString,queryParamsObject}:{queryString:string;queryP
     const {data:doctorDataResponse,isFetching} = useQuery({
         queryKey:["doctors",queryParamsObject],
         queryFn:()=>getDoctors(queryString)
+    })
+    const statusMutation = useMutation({
+      mutationFn: changeUserStatus,
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ["doctors"] })
+        toast.add({ title: "Doctor status updated", type: "success" })
+      },
+      onError: () => toast.add({
+        title: "Could not update doctor status",
+        description: "Please try again.",
+        type: "error",
+      }),
     })
     const { data: specialtiesResponse, isLoading: isLoadingSpecialties, isError: hasSpecialtiesError } = useQuery({
       queryKey: ["specialties"],
@@ -295,6 +310,10 @@ const DoctorsTable = ({queryString,queryParamsObject}:{queryString:string;queryP
   const handleDelete = (doctor:IDoctor) => {
     setDeletingDoctor(doctor)
   }
+  const handleStatusChange = (doctor: IDoctor, status: "ACTIVE" | "BLOCKED") => {
+    statusMutation.mutate({ userId: doctor.userId, userStatus: status })
+  }
+  const doctorColumns = getDoctorColumns(handleStatusChange, statusMutation.isPending)
 
   const requestedGenderFilter = searchParams.get("gender");
   const genderFilter = requestedGenderFilter === "MALE" || requestedGenderFilter === "FEMALE"

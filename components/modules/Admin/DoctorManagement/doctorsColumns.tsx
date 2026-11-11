@@ -1,11 +1,11 @@
 import DateCell from "@/components/shared/cell/DateCell";
-import StatusBadgeCell from "@/components/shared/cell/StatusBadgeCell";
 import UserInfoCell from "@/components/shared/cell/UserInfoCell";
 import type { DataTableFeatures } from "@/components/shared/table/DataTable";
 import { Badge } from "@/components/ui/badge";
 import { IDoctor } from "@/types/doctor.types";
 import { ColumnDef } from "@tanstack/react-table";
 import { Star } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
     typeof value === "object" && value !== null;
@@ -40,7 +40,10 @@ const getSpecialtyTitles = (value: unknown): string[] => {
     });
 };
 
-export const doctorColumns: ColumnDef<DataTableFeatures, IDoctor>[] = [
+export const getDoctorColumns = (
+    onStatusChange: (doctor: IDoctor, status: "ACTIVE" | "BLOCKED") => void,
+    statusUpdating: boolean,
+): ColumnDef<DataTableFeatures, IDoctor>[] => [
     {
         id: "name",
         accessorKey: "name",
@@ -160,7 +163,23 @@ export const doctorColumns: ColumnDef<DataTableFeatures, IDoctor>[] = [
         enableSorting: false,
         cell: ({ row }) => {
             return (
-              <StatusBadgeCell status={row.original.user.status}/>
+              <Select
+                value={row.original.user.status}
+                onValueChange={(value) => {
+                    if (value === "ACTIVE" || value === "BLOCKED") {
+                        onStatusChange(row.original, value)
+                    }
+                }}
+                disabled={statusUpdating || row.original.user.status === "DELETED"}
+              >
+                <SelectTrigger aria-label={`Status for ${row.original.name}`} className="w-32">
+                    <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="ACTIVE">Active</SelectItem>
+                    <SelectItem value="BLOCKED">Blocked</SelectItem>
+                </SelectContent>
+              </Select>
             )
         }
     },

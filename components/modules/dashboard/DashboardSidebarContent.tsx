@@ -6,6 +6,7 @@ import { getIconComponent } from "@/lib/iconMapper"
 import { cn } from "@/lib/utils"
 import { NavSection } from "@/types/dashboard.types"
 import { UserInfo } from "@/types/user.types"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -24,9 +25,16 @@ const DashboardSidebarContent = ({ dashboardHome, navItems, userInfo }: Dashboar
     return (
         <div className="hidden md:flex h-full w-64 flex-col border-r bg-card overflow-y-auto">
             {/* Logo / Brand */}
-            <div className="flex h-16 items-center border-b px-6">
-                <Link href={dashboardHome}>
-                    <span className="text-xl font-bold text-primary">Smart Healthcare</span>
+            <div className="flex h-16 items-center border-b px-4">
+                <Link href={dashboardHome} className="inline-flex items-center rounded-lg p-2 transition-colors hover:bg-muted/60">
+                    <Image
+                        src="/images/healora-logo.png"
+                        alt="Healora"
+                        width={200}
+                        height={53}
+                        priority
+                        className="h-auto w-40"
+                    />
                 </Link>
             </div>
 

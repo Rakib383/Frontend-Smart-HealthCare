@@ -22,7 +22,7 @@ const AppointmentPieChart = ({ data, title, description }: AppointmentPieChartPr
 
     if (!data || !Array.isArray(data)) {
         return (
-            <Card className="col-span-2">
+            <Card>
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>
                     <CardDescription>{description}</CardDescription>
@@ -49,7 +49,7 @@ const AppointmentPieChart = ({ data, title, description }: AppointmentPieChartPr
 
     if (!formattedData.length || formattedData.every(item => item.value === 0)) {
         return (
-            <Card className="col-span-2">
+            <Card>
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>
                     <CardDescription>{description}</CardDescription>
@@ -64,7 +64,7 @@ const AppointmentPieChart = ({ data, title, description }: AppointmentPieChartPr
         )
     }
     return (
-        <Card className="col-span-2">
+        <Card>
             <CardHeader>
                 <CardTitle>{title}</CardTitle>
                 <CardDescription>{description}</CardDescription>

@@ -1,4 +1,5 @@
+import LoadingState from "@/components/shared/LoadingState"
+
 export default function GlobalLoading() {
-    // Or a custom loading skeleton component
-    return <p>Global Loading...</p>
-  }
+  return <LoadingState className="min-h-[100svh] bg-background" />
+}
