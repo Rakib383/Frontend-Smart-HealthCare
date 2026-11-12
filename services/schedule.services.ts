@@ -55,6 +55,15 @@ export const getMyDoctorSchedules = async (queryString: string) => {
   }
 }
 
+export const getAllDoctorSchedules = async (queryString: string) => {
+  try {
+    return await httpClient.get<IDoctorSchedule[]>(`/doctor-schedules${queryString ? `?${queryString}` : ""}`)
+  } catch (error) {
+    console.error("Error fetching doctor schedules:", error)
+    throw error
+  }
+}
+
 export const getMyDoctorScheduleIds = async () => {
   try {
     const pageSize = 100

@@ -1,9 +1,5 @@
-const SpecialtiesManagementPage = () => {
-  return (
-    <div>
-      <h1>SpecialtiesManagementPage</h1>
-    </div>
-  )
-}
+import SpecialtiesTable from "@/components/modules/Admin/SpecialtyManagement/SpecialtiesTable"
+
+const SpecialtiesManagementPage = () => <SpecialtiesTable />
 
 export default SpecialtiesManagementPage

@@ -21,6 +21,12 @@ export interface IDoctorSchedule {
   isBooked: boolean
   createdAt: string | Date
   schedule: ISchedule
+  doctor?: {
+    id: string
+    name: string
+    email: string
+    profilePhoto?: string | null
+  }
 }
 
 export interface ICreateDoctorSchedulePayload {

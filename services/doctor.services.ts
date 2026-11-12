@@ -4,7 +4,7 @@ import { httpClient } from "@/lib/axios/httpClient"
 import { IDoctor } from "@/types/doctor.types"
 
 export interface IUpdateDoctorPayload {
-    doctor: {
+    doctor?: {
         name: string;
         contactNumber: string;
         address?: string;
@@ -16,7 +16,7 @@ export interface IUpdateDoctorPayload {
         currentWorkingPlace: string;
         designation: string;
     };
-    specialties: Array<{
+    specialties?: Array<{
         specialtyId: string;
         shouldDelete?: boolean;
     }>;
