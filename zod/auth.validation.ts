@@ -24,6 +24,26 @@ export const registerPatientZodSchema = z.object({
 
 export type IRegisterPatientPayload = z.infer<typeof registerPatientZodSchema>
 
+export const changePasswordPayloadSchema = z.object({
+    currentPassword: z.string().min(1, "Enter your current password"),
+    newPassword: z.string()
+        .min(8, "New password must be at least 8 characters")
+        .max(128, "New password must be no more than 128 characters"),
+})
+
+export const changePasswordFormSchema = changePasswordPayloadSchema.extend({
+    confirmPassword: z.string().min(1, "Confirm your new password"),
+}).refine((values) => values.newPassword !== values.currentPassword, {
+    message: "New password must be different from your current password",
+    path: ["newPassword"],
+}).refine((values) => values.newPassword === values.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+})
+
+export type IChangePasswordPayload = z.infer<typeof changePasswordPayloadSchema>
+export type IChangePasswordFormValues = z.infer<typeof changePasswordFormSchema>
+
 export const verifyEmailZodSchema = z.object({
     email: z.email("Enter a valid email address"),
     otp: z.string().regex(/^\d{6}$/, "Enter the 6-digit code from your email"),

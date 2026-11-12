@@ -1,6 +1,7 @@
 "use server";
 
 import { setTokenInCookies } from "@/lib/tokenUtils";
+import { changePasswordPayloadSchema, type IChangePasswordPayload } from "@/zod/auth.validation";
 import { cookies } from "next/headers";
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -76,4 +77,94 @@ export async function getUserInfo() {
         console.error("Error fetching user info:", error);
         return null;
     }
+}
+
+export type ChangePasswordResult =
+    | { success: true; message: string }
+    | { success: false; message: string };
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === "object" && value !== null;
+
+export async function changePassword(payload: IChangePasswordPayload): Promise<ChangePasswordResult> {
+    const parsedPayload = changePasswordPayloadSchema.safeParse(payload);
+
+    if (!parsedPayload.success) {
+        return {
+            success: false,
+            message: parsedPayload.error.issues[0]?.message ?? "Invalid password details.",
+        };
+    }
+
+    if (parsedPayload.data.currentPassword === parsedPayload.data.newPassword) {
+        return {
+            success: false,
+            message: "New password must be different from your current password.",
+        };
+    }
+
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore.getAll()
+        .map(({ name, value }) => `${name}=${value}`)
+        .join("; ");
+
+    if (!cookieStore.get("accessToken")?.value || !cookieStore.get("better-auth.session_token")?.value) {
+        return { success: false, message: "Your session has expired. Please sign in again." };
+    }
+
+    let res: Response;
+
+    try {
+        res = await fetch(`${BASE_API_URL}/auth/change-password`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieHeader,
+            },
+            body: JSON.stringify(parsedPayload.data),
+            cache: "no-store",
+        });
+    } catch {
+        return { success: false, message: "Could not reach the server. Please try again." };
+    }
+
+    let result: unknown;
+    try {
+        result = await res.json();
+    } catch {
+        return { success: false, message: "The server returned an invalid response. Please try again." };
+    }
+
+    if (!isRecord(result)) {
+        return { success: false, message: "The server returned an invalid response. Please try again." };
+    }
+
+    if (!res.ok || result.success !== true) {
+        return {
+            success: false,
+            message: typeof result.message === "string" ? result.message : "Unable to change your password.",
+        };
+    }
+
+    const data = isRecord(result.data) ? result.data : {};
+    const { accessToken, refreshToken, token } = data;
+
+    if (typeof accessToken !== "string" || typeof refreshToken !== "string") {
+        return {
+            success: false,
+            message: "Password changed, but your session could not be refreshed. Please sign in again.",
+        };
+    }
+
+    await setTokenInCookies("accessToken", accessToken);
+    await setTokenInCookies("refreshToken", refreshToken);
+
+    if (typeof token === "string" && token) {
+        await setTokenInCookies("better-auth.session_token", token);
+    }
+
+    return {
+        success: true,
+        message: typeof result.message === "string" ? result.message : "Password changed successfully.",
+    };
 }
