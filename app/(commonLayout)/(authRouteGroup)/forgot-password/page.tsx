@@ -1,11 +1,5 @@
-import React from 'react'
+import { redirect } from "next/navigation"
 
-const forgetPasswordPage = () => {
-  return (
-    <div>
-      forgetPasswordPage
-    </div>
-  )
-}
+const ForgotPasswordPage = () => redirect("/reset-password")
 
-export default forgetPasswordPage
+export default ForgotPasswordPage

@@ -93,7 +93,10 @@ export async function proxy(request: NextRequest) {
             if (accessToken && email) {
                 const userInfo = await getUserInfo();
 
-                if (userInfo.needPasswordChange) {
+                if (
+                    userInfo?.needPasswordChange
+                    || userInfo?.email?.toLowerCase() === email.toLowerCase()
+                ) {
                     return NextResponse.next();
                 } else {
                     return NextResponse.redirect(new URL(getDefaultDashboardRoute(userRole as UserRole), request.url));
@@ -106,9 +109,7 @@ export async function proxy(request: NextRequest) {
                 return NextResponse.next();
             }
 
-            const loginUrl = new URL("/login", request.url);
-            loginUrl.searchParams.set("redirect", pathname);
-            return NextResponse.redirect(loginUrl);
+            return NextResponse.next();
         }
 
         // Rule-3 User trying to access Public route -> allow

@@ -1,7 +1,13 @@
 "use server";
 
 import { setTokenInCookies } from "@/lib/tokenUtils";
-import { changePasswordPayloadSchema, type IChangePasswordPayload } from "@/zod/auth.validation";
+import {
+    changePasswordPayloadSchema,
+    requestPasswordResetSchema,
+    resetPasswordPayloadSchema,
+    type IChangePasswordPayload,
+    type IResetPasswordPayload,
+} from "@/zod/auth.validation";
 import { cookies } from "next/headers";
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -85,6 +91,80 @@ export type ChangePasswordResult =
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
     typeof value === "object" && value !== null;
+
+export type PasswordResetActionResult =
+    | { success: true; message: string }
+    | { success: false; message: string };
+
+const postPasswordResetRequest = async (
+    endpoint: string,
+    payload: unknown,
+): Promise<PasswordResetActionResult> => {
+    let response: Response;
+
+    try {
+        response = await fetch(`${BASE_API_URL}${endpoint}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+            cache: "no-store",
+        });
+    } catch {
+        return { success: false, message: "Could not reach the server. Please try again." };
+    }
+
+    let result: unknown;
+    try {
+        result = await response.json();
+    } catch {
+        return { success: false, message: "The server returned an invalid response. Please try again." };
+    }
+
+    if (!isRecord(result)) {
+        return { success: false, message: "The server returned an invalid response. Please try again." };
+    }
+
+    if (!response.ok || result.success !== true) {
+        return {
+            success: false,
+            message: typeof result.message === "string" ? result.message : "Unable to complete the password reset.",
+        };
+    }
+
+    return {
+        success: true,
+        message: typeof result.message === "string" ? result.message : "Request completed successfully.",
+    };
+};
+
+export async function requestPasswordResetOtp(email: string): Promise<PasswordResetActionResult> {
+    const parsed = requestPasswordResetSchema.safeParse({ email });
+
+    if (!parsed.success) {
+        return { success: false, message: parsed.error.issues[0]?.message ?? "Enter a valid email address." };
+    }
+
+    return postPasswordResetRequest("/auth/forget-password", parsed.data);
+}
+
+export async function resetPassword(payload: IResetPasswordPayload): Promise<PasswordResetActionResult> {
+    const parsed = resetPasswordPayloadSchema.safeParse(payload);
+
+    if (!parsed.success) {
+        return { success: false, message: parsed.error.issues[0]?.message ?? "Invalid password reset details." };
+    }
+
+    const result = await postPasswordResetRequest("/auth/reset-password", parsed.data);
+
+    if (result.success) {
+        const cookieStore = await cookies();
+        cookieStore.delete("accessToken");
+        cookieStore.delete("refreshToken");
+        cookieStore.delete("better-auth.session_token");
+    }
+
+    return result;
+}
 
 export async function changePassword(payload: IChangePasswordPayload): Promise<ChangePasswordResult> {
     const parsedPayload = changePasswordPayloadSchema.safeParse(payload);

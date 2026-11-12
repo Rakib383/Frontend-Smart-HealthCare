@@ -88,6 +88,8 @@ export default function RegisterForm() {
                                             size="icon"
                                             aria-label={showPassword ? "Hide password" : "Show password"}
                                             onClick={() => setShowPassword((visible) => !visible)}
+                                            onMouseDown={(event) => event.preventDefault()}
+                                            style={{ translate: "none" }}
                                             className="pointer-events-auto text-emerald-800 hover:bg-emerald-50 hover:text-emerald-950"
                                         >
                                             {showPassword
@@ -120,6 +122,8 @@ export default function RegisterForm() {
                                             size="icon"
                                             aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                                             onClick={() => setShowConfirmPassword((visible) => !visible)}
+                                            onMouseDown={(event) => event.preventDefault()}
+                                            style={{ translate: "none" }}
                                             className="pointer-events-auto text-emerald-800 hover:bg-emerald-50 hover:text-emerald-950"
                                         >
                                             {showConfirmPassword

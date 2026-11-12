@@ -103,7 +103,10 @@ const httpPost = async <TData>(endPoint: string, data: unknown, options?: ApiReq
 
     } catch (error) {
 
-        console.error(`POST request to ${endPoint} failed:`, error)
+        console.error(
+            `POST request to ${endPoint} failed:`,
+            error instanceof Error ? error.message : "Unknown error"
+        )
 
         throw (error)
 

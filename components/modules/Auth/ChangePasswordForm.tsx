@@ -58,8 +58,10 @@ const PasswordField = ({
           variant="ghost"
           size="icon"
           aria-label={visible ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
+          onMouseDown={(event) => event.preventDefault()}
           onClick={() => setVisible((current) => !current)}
-          className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground"
+          style={{ translate: "0 -50%" }}
+          className="absolute right-1 top-1/2 text-muted-foreground"
         >
           {visible
             ? <EyeOff className="size-4" aria-hidden="true" />

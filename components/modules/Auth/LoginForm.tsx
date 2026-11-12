@@ -66,9 +66,8 @@ const LoginForm = ({ redirectPath }: LoginFormParams) => {
                     return
                 }
 
-            } catch (error: unknown) {
-                const message = error instanceof Error ? error.message : String(error)
-                setServerError(`Login failed: ${message}`)
+            } catch {
+                setServerError("We couldn't complete sign in right now. Please try again.")
 
             }
         }
@@ -146,10 +145,12 @@ const LoginForm = ({ redirectPath }: LoginFormParams) => {
                                     append={
                                         <Button
                                             onClick={() => setShowPassword((value) => !value)}
+                                            onMouseDown={(event) => event.preventDefault()}
                                             type="button"
                                             variant="ghost"
                                             size="icon"
                                             aria-label={showPassword ? "Hide password" : "Show password"}
+                                            style={{ translate: "none" }}
                                             className="pointer-events-auto text-emerald-800 hover:bg-emerald-50 hover:text-emerald-950"
                                         >
                                             {
