@@ -35,3 +35,16 @@ export const getAllPrescriptions = async (queryString: string) => {
     throw error
   }
 }
+
+export const getMyPrescriptions = async () => {
+  try {
+    const response = await httpClient.get<IManagedPrescription[]>("/prescriptions/my-prescriptions")
+    if (!response.success) {
+      throw new Error(response.message || "Prescriptions could not be loaded.")
+    }
+    return response
+  } catch (error) {
+    console.error("Error fetching patient prescriptions:", error)
+    throw error
+  }
+}

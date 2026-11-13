@@ -1,9 +1,5 @@
-const MyPrescriptions = () => {
-  return (
-    <div>
-      <h1>MyPrescriptions page</h1>
-    </div>
-  )
-}
+import MyPrescriptions from "@/components/modules/Patient/MedicalRecords/MyPrescriptions"
 
-export default MyPrescriptions
+const MyPrescriptionsPage = () => <MyPrescriptions />
+
+export default MyPrescriptionsPage

@@ -1,10 +1,5 @@
+import HealthRecords from "@/components/modules/Patient/MedicalRecords/HealthRecords"
 
-const HealthRecords = () => {
-  return (
-    <div>
-      <h1>HealthRecords page</h1>
-    </div>
-  )
-}
+const HealthRecordsPage = () => <HealthRecords />
 
-export default HealthRecords
+export default HealthRecordsPage
