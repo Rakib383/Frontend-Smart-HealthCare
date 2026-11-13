@@ -18,6 +18,7 @@ import { useForm } from "@tanstack/react-form"
 import { useMutation } from "@tanstack/react-query"
 import { Eye, EyeOff, KeyRound, ShieldCheck, Stethoscope } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 interface LoginFormParams {
@@ -26,6 +27,7 @@ interface LoginFormParams {
 
 
 const LoginForm = ({ redirectPath }: LoginFormParams) => {
+    const router = useRouter()
     const [serverError, setServerError] = useState<string | null>(null)
     const [showPassword, setShowPassword] = useState(false)
     const [credentialsOpen, setCredentialsOpen] = useState(false)
@@ -57,14 +59,16 @@ const LoginForm = ({ redirectPath }: LoginFormParams) => {
         },
 
         onSubmit: async ({ value }) => {
+            setServerError(null)
             try {
-
                 const result = await mutateAsync(value)
 
-                if ("success" in result && !result.success) {
+                if (!result.success) {
                     setServerError(result.message)
                     return
                 }
+
+                router.replace(result.redirectTo)
 
             } catch {
                 setServerError("We couldn't complete sign in right now. Please try again.")

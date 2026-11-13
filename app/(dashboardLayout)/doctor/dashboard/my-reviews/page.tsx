@@ -1,10 +1,7 @@
+import MyReviews from "@/components/modules/Doctor/Reviews/MyReviews"
 
 const MyReviewsPage = () => {
-  return (
-    <div>
-      <h1>MyReviewsPage</h1>
-    </div>
-  )
+  return <MyReviews />
 }
 
 export default MyReviewsPage

@@ -34,3 +34,12 @@ export const getAllReviews = async (queryString: string) => {
     throw error
   }
 }
+
+export const getMyDoctorReviews = async () => {
+  try {
+    return await httpClient.get<IManagedReview[]>("/reviews/my-reviews")
+  } catch (error) {
+    console.error("Error fetching doctor reviews:", error)
+    throw error
+  }
+}

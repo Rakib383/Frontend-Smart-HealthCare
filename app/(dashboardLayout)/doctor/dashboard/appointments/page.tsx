@@ -1,9 +1,7 @@
+import DoctorsAppointments from "@/components/modules/Doctor/Appointments/DoctorsAppointments"
+
 const DoctorsAppointmentsPage = () => {
-  return (
-    <div>
-      <h1>DoctorsAppointmentsPage</h1>
-    </div>
-  )
+  return <DoctorsAppointments />
 }
 
 export default DoctorsAppointmentsPage

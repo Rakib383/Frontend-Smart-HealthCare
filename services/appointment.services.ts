@@ -10,6 +10,7 @@ interface AppointmentPerson {
   name: string
   email: string
   profilePhoto?: string | null
+  contactNumber?: string | null
 }
 
 export interface IManagedAppointment {
@@ -44,6 +45,23 @@ export interface IPatientAppointment {
   }
 }
 
+export interface IDoctorAppointment {
+  id: string
+  status: AppointmentStatus
+  paymentStatus: AppointmentPaymentStatus
+  createdAt: string | Date
+  patient: AppointmentPerson
+  schedule: {
+    startDateTime: string | Date
+    endDateTime: string | Date
+  }
+}
+
+export interface IAppointmentStatusUpdate {
+  id: string
+  status: AppointmentStatus
+}
+
 export interface IBookAppointmentPayload {
   doctorId: string
   scheduleId: string
@@ -67,6 +85,15 @@ export const getMyAppointments = async () => {
     return await httpClient.get<IPatientAppointment[]>("/appointments/my-appointments")
   } catch (error) {
     console.error("Error fetching patient appointments:", error)
+    throw error
+  }
+}
+
+export const getMyDoctorAppointments = async () => {
+  try {
+    return await httpClient.get<IDoctorAppointment[]>("/appointments/my-appointments")
+  } catch (error) {
+    console.error("Error fetching doctor appointments:", error)
     throw error
   }
 }
@@ -112,7 +139,7 @@ export const getAllAppointments = async () => {
 
 export const changeAppointmentStatus = async (appointmentId: string, status: AppointmentStatus) => {
   try {
-    return await httpClient.patch<IManagedAppointment>(
+    return await httpClient.patch<IAppointmentStatusUpdate>(
       `/appointments/change-appointment-status/${encodeURIComponent(appointmentId)}`,
       status,
     )

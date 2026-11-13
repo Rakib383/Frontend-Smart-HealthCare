@@ -3,17 +3,15 @@
 import { getDefaultDashboardRoute, isValidRedirectForRole, UserRole } from "@/lib/authUtils";
 import { httpClient } from "@/lib/axios/httpClient";
 import { setTokenInCookies } from "@/lib/tokenUtils";
-import { ApiErrorResponse } from "@/types/api.types";
 import { ILoginResponse } from "@/types/auth.types";
 import { ILoginPayload, loginZodSchema } from "@/zod/auth.validation";
-import { redirect } from "next/navigation";
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
     typeof value === "object" && value !== null;
 
 const getLoginErrorDetails = (error: unknown) => {
     if (!isRecord(error)) {
-        return { hasResponse: false, message: undefined, digest: undefined };
+        return { hasResponse: false, message: undefined };
     }
 
     const response = isRecord(error.response) ? error.response : undefined;
@@ -22,9 +20,12 @@ const getLoginErrorDetails = (error: unknown) => {
     return {
         hasResponse: Boolean(response),
         message: data && typeof data.message === "string" ? data.message : undefined,
-        digest: typeof error.digest === "string" ? error.digest : undefined,
     };
 };
+
+export type LoginActionResult =
+    | { success: true; redirectTo: string }
+    | { success: false; message: string };
 
 const getFriendlyLoginError = (message: string | undefined, hasResponse: boolean): string => {
     const normalizedMessage = message?.toLowerCase() ?? "";
@@ -42,7 +43,10 @@ const getFriendlyLoginError = (message: string | undefined, hasResponse: boolean
         : "We couldn't connect to the sign-in service. Check your connection and try again.";
 };
 
-export const loginAction = async (payload: ILoginPayload, redirectPath: string | undefined): Promise<ILoginResponse | ApiErrorResponse>  => {
+export const loginAction = async (
+    payload: ILoginPayload,
+    redirectPath: string | undefined,
+): Promise<LoginActionResult> => {
 
     const parsedPayload = loginZodSchema.safeParse(payload);
 
@@ -60,30 +64,36 @@ export const loginAction = async (payload: ILoginPayload, redirectPath: string |
 
         const {accessToken,refreshToken,token,user} = response.data;
 
-        const {role,emailVerified,needPasswordChange,email}= user
+        const {role,needPasswordChange,email}= user
 
         await setTokenInCookies("accessToken",accessToken)
         await setTokenInCookies("refreshToken",refreshToken)
         await setTokenInCookies("better-auth.session_token",token)
 
         if (needPasswordChange) {
-            redirect(`/reset-password?email=${email}`)
-        } else {
+            return {
+                success: true,
+                redirectTo: `/reset-password?email=${encodeURIComponent(email)}`,
+            }
+        }
 
-            const targetPath = redirectPath && isValidRedirectForRole(redirectPath,role as UserRole) ? redirectPath : getDefaultDashboardRoute(role as UserRole)
+        const targetPath = redirectPath && isValidRedirectForRole(redirectPath,role as UserRole)
+            ? redirectPath
+            : getDefaultDashboardRoute(role as UserRole)
 
-            redirect(targetPath)
+        return {
+            success: true,
+            redirectTo: targetPath,
         }
         
     } catch (error: unknown) {
         const errorDetails = getLoginErrorDetails(error);
 
-        if (errorDetails.digest?.startsWith("NEXT_REDIRECT")) {
-            throw error
-        }
-
         if (errorDetails.message?.toLowerCase() === "email not verified") {
-            redirect(`/verify-email?email=${payload.email}`)
+            return {
+                success: true,
+                redirectTo: `/verify-email?email=${encodeURIComponent(payload.email)}`,
+            }
         }
 
         return {
