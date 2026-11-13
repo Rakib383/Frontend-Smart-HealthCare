@@ -1,9 +1,5 @@
-const BookAppointments = () => {
-  return (
-    <div>
-      <h1>BookAppointments page</h1>
-    </div>
-  )
-}
+import BookAppointment from "@/components/modules/Patient/Appointments/BookAppointment"
 
-export default BookAppointments
+const BookAppointmentsPage = () => <BookAppointment />
+
+export default BookAppointmentsPage

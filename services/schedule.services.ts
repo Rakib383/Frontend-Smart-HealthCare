@@ -64,6 +64,17 @@ export const getAllDoctorSchedules = async (queryString: string) => {
   }
 }
 
+export const getAvailableDoctorSchedules = async (doctorId: string) => {
+  try {
+    return await httpClient.get<IDoctorSchedule[]>(
+      `/doctor-schedules/available/${encodeURIComponent(doctorId)}`,
+    )
+  } catch (error) {
+    console.error("Error fetching available appointment slots:", error)
+    throw error
+  }
+}
+
 export const getMyDoctorScheduleIds = async () => {
   try {
     const pageSize = 100
