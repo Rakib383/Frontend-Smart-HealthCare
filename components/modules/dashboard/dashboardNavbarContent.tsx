@@ -35,7 +35,7 @@ const DashboardNavbarContent = ({ dashboardHome, navItems, userInfo }: Dashboard
   }, []);
 
   return (
-    <div className="flex items-center gap-4 w-full px-4 py-3 border-b bg-background">
+    <div className="flex h-16 w-full items-center gap-4 border-b bg-background px-4">
       {/* Mobile Menu Toggle Button And Menu */}
       <Sheet open={isOpen && isMobile} onOpenChange={setIsOpen}>
         <SheetTrigger render={<Button variant="outline" size="icon" className="md:hidden" aria-label="Open navigation menu" />}>

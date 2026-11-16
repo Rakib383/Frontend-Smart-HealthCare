@@ -23,9 +23,9 @@ interface DashboardSidebarContentProps {
 const DashboardSidebarContent = ({ dashboardHome, navItems, userInfo }: DashboardSidebarContentProps) => {
     const pathname = usePathname()
     return (
-        <div className="hidden md:flex h-full w-64 flex-col border-r bg-card overflow-y-auto">
+        <div className="hidden md:flex h-full w-64 flex-col border-r bg-card">
             {/* Logo / Brand */}
-            <div className="flex h-16 items-center border-b px-4">
+            <div className="relative flex h-16 items-center px-4 after:absolute after:bottom-0 after:left-0 after:-right-px after:h-px after:bg-border">
                 <Link href={dashboardHome} className="inline-flex items-center rounded-lg p-2 transition-colors hover:bg-muted/60">
                     <Image
                         src="/images/healora-logo.png"

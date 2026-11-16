@@ -1,10 +1,8 @@
 
+import DoctorPrescriptions from "@/components/modules/Doctor/Prescriptions/DoctorPrescriptions"
+
 const PrescriptionsPage = () => {
-  return (
-    <div>
-      <h1>PrescriptionsPage</h1>
-    </div>
-  )
+  return <DoctorPrescriptions />
 }
 
 export default PrescriptionsPage
