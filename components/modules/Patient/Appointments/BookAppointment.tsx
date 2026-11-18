@@ -4,6 +4,14 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import {
   bookAppointment,
@@ -19,7 +27,7 @@ import axios from "axios"
 import { format } from "date-fns"
 import { CalendarClock, CalendarDays, CheckCircle2, CreditCard, MapPin, Search, Star, Wallet } from "lucide-react"
 import Link from "next/link"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 type PaymentChoice = "PAY_NOW" | "PAY_LATER"
 const EMPTY_DOCTORS: IDoctor[] = []
@@ -111,6 +119,14 @@ const BookAppointment = () => {
   const [paymentChoice, setPaymentChoice] = useState<PaymentChoice>("PAY_NOW")
   const [bookingError, setBookingError] = useState("")
   const [bookingSuccess, setBookingSuccess] = useState("")
+  const [payLaterConfirmation, setPayLaterConfirmation] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!payLaterConfirmation) return
+
+    const timeoutId = window.setTimeout(() => setPayLaterConfirmation(null), 5000)
+    return () => window.clearTimeout(timeoutId)
+  }, [payLaterConfirmation])
 
   const doctorsQuery = useQuery({
     queryKey: ["appointment-booking-doctors"],
@@ -173,7 +189,9 @@ const BookAppointment = () => {
       if (paymentChoice === "PAY_NOW") {
         setBookingSuccess("Your appointment is booked. Payment checkout wasn't available, but you can pay from My Appointments.")
       } else {
-        setBookingSuccess("Your appointment is booked. You can pay later from My Appointments.")
+        setPayLaterConfirmation(
+          `Your appointment with ${selectedDoctor?.name ?? "your doctor"} is confirmed. You can pay later from My Appointments.`,
+        )
       }
       setSelectedScheduleId("")
     },
@@ -200,6 +218,28 @@ const BookAppointment = () => {
 
   return (
     <div className="space-y-6">
+      <Dialog
+        open={Boolean(payLaterConfirmation)}
+        onOpenChange={(open) => {
+          if (!open) setPayLaterConfirmation(null)
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="items-center border-b-0 px-8 pt-8 text-center">
+            <span className="mb-2 flex size-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+              <CheckCircle2 className="size-9" aria-hidden="true" />
+            </span>
+            <DialogTitle className="text-xl">Appointment booked!</DialogTitle>
+            <DialogDescription>{payLaterConfirmation}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="justify-center">
+            <Button className="w-full" onClick={() => setPayLaterConfirmation(null)}>
+              Done
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <header className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">Book an appointment</h1>
         <p className="text-sm text-muted-foreground">
