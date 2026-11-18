@@ -16,7 +16,7 @@ import {
 import { ILoginPayload, loginZodSchema } from "@/zod/auth.validation"
 import { useForm } from "@tanstack/react-form"
 import { useMutation } from "@tanstack/react-query"
-import { Eye, EyeOff, KeyRound, ShieldCheck, Stethoscope } from "lucide-react"
+import { Eye, EyeOff, KeyRound, ShieldCheck, Stethoscope, UserRound } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -44,6 +44,12 @@ const LoginForm = ({ redirectPath }: LoginFormParams) => {
             email: "farzana.ahmed@example.com",
             password: "Doctor@321",
             icon: Stethoscope,
+        },
+        {
+            role: "Patient",
+            email: "patient@mail.com",
+            password: "123456aA",
+            icon: UserRound,
         },
     ]
 

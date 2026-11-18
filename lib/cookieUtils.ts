@@ -9,7 +9,7 @@ export const setCookie = async (name: string, value: string, maxAgeInSeconds: nu
     cookieStore.set(name, value, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "lax",
         path: "/",
         maxAge: maxAgeInSeconds
     })

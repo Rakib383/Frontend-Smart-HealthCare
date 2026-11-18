@@ -41,3 +41,9 @@ export interface IDoctorDashboardData {
     totalRevenue: number;
     appointmentStatusDistribution: PieChartData[];
 }
+
+export interface IPatientDashboardData {
+    appointmentCount: number;
+    reviewCount: number;
+    appointmentStatusDistribution: PieChartData[];
+}

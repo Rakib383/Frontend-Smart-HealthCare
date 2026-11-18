@@ -82,7 +82,11 @@ export interface IBookAppointmentResult {
 
 export const getMyAppointments = async () => {
   try {
-    return await httpClient.get<IPatientAppointment[]>("/appointments/my-appointments")
+    const response = await httpClient.get<IPatientAppointment[]>("/appointments/my-appointments")
+    if (!response.success) {
+      throw new Error(response.message || "Your appointments could not be loaded.")
+    }
+    return response
   } catch (error) {
     console.error("Error fetching patient appointments:", error)
     throw error
@@ -124,6 +128,22 @@ export const initiateAppointmentPayment = async (appointmentId: string) => {
     )
   } catch (error) {
     console.error("Error initiating appointment payment:", error)
+    throw error
+  }
+}
+
+export const verifyAppointmentPayment = async (payload: {
+  appointmentId: string
+  sessionId?: string
+  paymentId?: string
+}) => {
+  try {
+    return await httpClient.post<{
+      id: string
+      paymentStatus: AppointmentPaymentStatus
+    }>("/payment/verify-checkout-session", payload)
+  } catch (error) {
+    console.error("Error verifying appointment payment:", error)
     throw error
   }
 }

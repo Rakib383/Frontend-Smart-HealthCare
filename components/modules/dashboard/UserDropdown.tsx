@@ -68,7 +68,7 @@ const UserDropdown = ({ userInfo }: UserDropdownProps) => {
                     {isLoggingOut
                         ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
                         : <LogOut className="mr-2 h-4 w-4" />}
-                    Log out
+                    {isLoggingOut ? "Logging out..." : "Log out"}
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

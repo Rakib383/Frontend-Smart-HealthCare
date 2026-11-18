@@ -23,7 +23,7 @@ export default function LogoutButton({ className, variant = "outline" }: LogoutB
             {isPending
                 ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
                 : <LogOut className="size-4" aria-hidden="true" />}
-            Log out
+            {isPending ? "Logging out..." : "Log out"}
         </Button>
     )
 }

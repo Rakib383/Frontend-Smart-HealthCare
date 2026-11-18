@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import {
   getMyAppointments,
   initiateAppointmentPayment,
+  verifyAppointmentPayment,
   type AppointmentPaymentStatus,
   type AppointmentStatus,
   type IPatientAppointment,
@@ -18,7 +19,7 @@ import axios from "axios"
 import { format } from "date-fns"
 import { CalendarClock, CalendarPlus, CheckCircle2, Clock3, CreditCard, RefreshCw } from "lucide-react"
 import Link from "next/link"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 const EMPTY_APPOINTMENTS: IPatientAppointment[] = []
 
@@ -67,16 +68,69 @@ const formatAppointmentTime = (appointment: IPatientAppointment) => {
 const formatFee = (fee: number) =>
   new Intl.NumberFormat("en-BD", { style: "currency", currency: "BDT" }).format(fee)
 
-const MyAppointments = ({ paymentCancelled }: { paymentCancelled: boolean }) => {
+const MyAppointments = ({
+  paymentCancelled,
+  paymentSuccess,
+  paymentAppointmentId,
+  paymentId,
+  checkoutSessionId,
+}: {
+  paymentCancelled: boolean
+  paymentSuccess: boolean
+  paymentAppointmentId: string | null
+  paymentId: string | null
+  checkoutSessionId: string | null
+}) => {
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<"ALL" | AppointmentStatus>("ALL")
   const [paymentError, setPaymentError] = useState("")
+  const paymentConfirmationStartedAt = useRef<number | null>(null)
+  useEffect(() => {
+    paymentConfirmationStartedAt.current = paymentSuccess ? Date.now() : null
+  }, [paymentSuccess])
   const appointmentsQuery = useQuery({
     queryKey: ["patient-appointments"],
     queryFn: getMyAppointments,
+    refetchInterval: (query) => {
+      if (!paymentSuccess || !paymentAppointmentId) return false
+      if (
+        paymentConfirmationStartedAt.current !== null
+        && Date.now() - paymentConfirmationStartedAt.current >= 30000
+      ) return false
+      const appointment = query.state.data?.data.find((item) => item.id === paymentAppointmentId)
+      return appointment?.paymentStatus === "PAID" ? false : 2000
+    },
   })
+  const refetchAppointments = appointmentsQuery.refetch
+  const paymentVerificationQuery = useQuery({
+    queryKey: ["payment-session-verification", paymentAppointmentId, paymentId, checkoutSessionId],
+    queryFn: () => verifyAppointmentPayment({
+      appointmentId: paymentAppointmentId!,
+      sessionId: checkoutSessionId ?? undefined,
+      paymentId: paymentId ?? undefined,
+    }),
+    enabled: paymentSuccess && Boolean(paymentAppointmentId),
+    refetchOnMount: "always",
+    refetchInterval: (query) => {
+      if (query.state.data?.data.paymentStatus === "PAID") return false
+      if (!checkoutSessionId) return false
+      if (
+        paymentConfirmationStartedAt.current !== null
+        && Date.now() - paymentConfirmationStartedAt.current >= 30000
+      ) return false
+      return 2000
+    },
+  })
+  useEffect(() => {
+    if (paymentVerificationQuery.data?.data.paymentStatus === "PAID") {
+      void refetchAppointments()
+    }
+  }, [paymentVerificationQuery.data?.data.paymentStatus, refetchAppointments])
 
   const appointments = appointmentsQuery.data?.data ?? EMPTY_APPOINTMENTS
+  const paymentConfirmation = paymentAppointmentId
+    ? appointments.find((appointment) => appointment.id === paymentAppointmentId)
+    : undefined
   const counts = useMemo(() => ({
     total: appointments.length,
     upcoming: appointments.filter(
@@ -96,10 +150,14 @@ const MyAppointments = ({ paymentCancelled }: { paymentCancelled: boolean }) => 
     return appointments
       .filter((appointment) => statusFilter === "ALL" || appointment.status === statusFilter)
       .filter((appointment) => !term || appointment.doctor.name.toLowerCase().includes(term))
-      .sort((left, right) =>
-        new Date(left.schedule.startDateTime).getTime() - new Date(right.schedule.startDateTime).getTime(),
-      )
-  }, [appointments, search, statusFilter])
+      .sort((left, right) => {
+        if (paymentSuccess && paymentAppointmentId) {
+          if (left.id === paymentAppointmentId) return -1
+          if (right.id === paymentAppointmentId) return 1
+        }
+        return new Date(left.schedule.startDateTime).getTime() - new Date(right.schedule.startDateTime).getTime()
+      })
+  }, [appointments, search, statusFilter, paymentSuccess, paymentAppointmentId])
 
   const paymentMutation = useMutation({
     mutationFn: initiateAppointmentPayment,
@@ -139,6 +197,38 @@ const MyAppointments = ({ paymentCancelled }: { paymentCancelled: boolean }) => 
         <Alert>
           <AlertDescription>
             Checkout was canceled. Your appointment is still listed below, and you can try paying again.
+          </AlertDescription>
+        </Alert>
+      )}
+      {paymentSuccess && (
+        <Alert>
+          <AlertDescription className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <span>
+              {paymentConfirmation?.paymentStatus === "PAID"
+                ? "Appointment booked and payment complete. Your confirmed appointment is highlighted below."
+                : paymentVerificationQuery.isError
+                  ? "We couldn’t verify the payment status yet. Please check again."
+                : paymentConfirmation
+                  ? "Your payment was successful. We’re confirming the payment status and will update this appointment automatically."
+                  : "Your payment was successful. We’re loading your booked appointment."}
+            </span>
+            {paymentConfirmation?.paymentStatus !== "PAID" && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (paymentAppointmentId) {
+                    void paymentVerificationQuery.refetch()
+                  }
+                  void refetchAppointments()
+                }}
+                disabled={appointmentsQuery.isFetching || paymentVerificationQuery.isFetching}
+              >
+                <RefreshCw aria-hidden="true" />
+                {appointmentsQuery.isFetching || paymentVerificationQuery.isFetching ? "Checking..." : "Check payment status"}
+              </Button>
+            )}
           </AlertDescription>
         </Alert>
       )}
@@ -239,7 +329,10 @@ const MyAppointments = ({ paymentCancelled }: { paymentCancelled: boolean }) => 
         ) : (
           <div className="space-y-3">
             {filteredAppointments.map((appointment) => (
-              <Card key={appointment.id}>
+              <Card
+                key={appointment.id}
+                className={paymentSuccess && appointment.id === paymentAppointmentId ? "border-primary ring-2 ring-primary/20" : undefined}
+              >
                 <CardContent className="space-y-4">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="flex min-w-0 items-center gap-3">

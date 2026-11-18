@@ -21,7 +21,7 @@ export const commonProtectedRoutes :RouteConfig = {
 
 export const patientProtectedRoutes:RouteConfig = {
     pattern:[/^\/dashboard/ ],
-    exact:["/payment/success"]
+    exact:[]
 
 }
 

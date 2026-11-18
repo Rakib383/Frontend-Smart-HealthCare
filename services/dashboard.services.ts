@@ -1,7 +1,11 @@
 "use server"
 
 import { httpClient } from "@/lib/axios/httpClient";
-import type { IAdminDashboardData, IDoctorDashboardData } from "@/types/dashboard.types";
+import type {
+    IAdminDashboardData,
+    IDoctorDashboardData,
+    IPatientDashboardData,
+} from "@/types/dashboard.types";
 
 export async function getDashboardData() {
     try {
@@ -23,6 +27,19 @@ export async function getDoctorDashboardData() {
         return await httpClient.get<IDoctorDashboardData>("/stats")
     } catch (error) {
         console.error("Error fetching doctor dashboard data:", error)
+        throw error
+    }
+}
+
+export async function getPatientDashboardData() {
+    try {
+        const response = await httpClient.get<IPatientDashboardData>("/stats")
+        if (!response.success) {
+            throw new Error(response.message || "Patient dashboard data could not be loaded.")
+        }
+        return response
+    } catch (error) {
+        console.error("Error fetching patient dashboard data:", error)
         throw error
     }
 }
